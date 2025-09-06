@@ -82,9 +82,7 @@ nexus-datalens/
 
 ## 🎥 Demo Video
 
-📺 [Click here to watch the demo](#) *(replace `#` with your YouTube/GitHub video link)*
 ▶ Coming soon...
-
 ---
 
 ## 🚦 Getting Started
