@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nexus DataLens</title>
+
+  <!-- TailwindCSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+
+  <!-- AOS Animation -->
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
+  <!-- Custom Styles -->
+  <style>
+    body {
+      background: linear-gradient(135deg, #0a1f44 0%, #000000 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .spotlight {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle at center, rgba(10, 31, 68, 0.4), transparent);
+      filter: blur(200px);
+      transform: translate(-50%, -50%);
+      z-index: 0;
+    }
+
+    .card-panel {
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(30px);
+    }
+
+    .upload-box {
+      position: relative;
+      padding: 4px;
+      border-radius: 1rem;
+      overflow: hidden;
+    }
+    
+    .glow-line {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: conic-gradient(
+        from 0deg,
+        #00ffff,
+        #ff00ff,
+        #00ffff
+      );
+      padding: 2px;
+      mask: 
+        linear-gradient(#000 0 0) content-box, 
+        linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      -webkit-mask-composite: destination-out;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+    
+    @keyframes borderMove {
+      to {
+        transform: rotate(1turn);
+      }
+    }
+    
+    .animate-borderMove {
+      animation: borderMove 12s linear infinite;
+      transform-origin: center;
+    }
+    
+  </style>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="neon-wrapper.css">
+</head>
+
+<body class="relative text-white">
+
+  <!-- Background Glow -->
+  <div class="spotlight pointer-events-none"></div>
+
+  <!-- Navbar -->
+  <nav
+    class="sticky top-0 z-50 flex justify-between items-center px-6 py-4 bg-gradient-to-r from-[#0A0F1F] via-[#0a1f44] to-[#0A0F1F] shadow-md">
+    <a href="index.html"><img src="LOGO.jpeg" alt="Logo" class="h-12 rounded shadow-lg" /></a>
+    <ul class="flex gap-6 font-semibold">
+      <li><a href="https://ap-south-1.quicksight.aws.amazon.com/embed/2609a74fe475412781818bbfefa476d9/dashboards/49469098-a37c-41c4-b570-527bdcdd3277?code=AYABeLA2F28J9ccLhbtDSeP52b8AAAABAAdhd3Mta21zAExhcm46YXdzOmttczphcC1zb3V0aC0xOjE5Nzk5NjEyMjE0OTprZXkvZWYwZmM3YmEtMDExZS00MmNjLWJhNDctZWZmNDk1NGU3MTRjALgBAgEAeKZkglQ7sX7Es9pGBLjJr3mUv5VmoF_fGXBaUVgDwM1EAaMc38_U5_up_faPiJlI6soAAAB-MHwGCSqGSIb3DQEHBqBvMG0CAQAwaAYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAxlw9FTYOSeUEMdzKICARCAOwjcqdQNb6V325ZHQBhfSZbrQcqAXds0dpb8GyfmmgnfoHl-770SvHsysP_QeElsufM5i5lnVP37YreIAgAAAAAMAAAQAAAAAAAAAAAAAAAAAPm7OlUYEaDiPTqxFNsRJXv_____AAAAAQAAAAAAAAAAAAAAAQAAAJvejudzYK8O9iOgKLBHlbmIBFdi9ENmag2ObhEvafKwD1Hi9yT6XLTQMX3XTo1z8YsI44lb4imvLSuV1p8F0mxHtFKVVa7bhIty37N4ACCnah_WDmUMFZ3xHi2hrhyOqf2LRqYZmStwTffNQKpDzjZS_CAlZhnlS0UTE7hKQrJToYQTtg0vqtXvTbXxkxSMyUL83RKVRKNhobxoiouB6d0JPXgf_hX13tXMB0w%3D&identityprovider=quicksight&isauthcode=true" class="text-blue-300 hover:text-white transition" target="_blank">Dashboard</a></li>
+      <li><a href="features.html" class="text-blue-300 hover:text-white transition" target="_blank">Features</a></li>
+      <li><a href="pricing.html" class="text-blue-300 hover:text-white transition" target="_blank">Pricing</a></li>
+      <li><a href="about.html" class="text-blue-300 hover:text-white transition" target="_blank">About Us</a></li>
+      <li><a href="faq.html" class="text-blue-300 hover:text-white transition" target="_blank">FAQs</a></li>
+      <li id="signup-link"><a href="signup.html" class="text-blue-300 hover:text-white transition">Sign Up</a>
+      </li>
+      <li id="login-link"><a href="login.html" class="text-blue-300 hover:text-white transition">Log In</a></li>
+      <li id="logout-link" style="display: none;"><button onclick="logout()"
+          class="text-red-400 hover:text-white transition">Log Out</button></li>
+    </ul>
+  </nav>
+
+  <!-- Hero + Upload -->
+  <div class="upload-box relative max-w-xl mx-auto mt-10">
+    <!-- Glowing border line -->
+    <span class="glow-line animate-borderMove"></span>
+    <header class="text-center mb-12 max-w-2xl">
+      <h1 class="text-4xl font-bold mb-4">Welcome to Nexus DataLens</h1>
+      <p class="text-lg text-blue-200">
+        Automate data ingestion, transformation & visualization — gain insights with zero friction.
+      </p>
+    </header>
+
+    <div class="relative group max-w-xl mx-auto mt-10">
+      <!-- Neon Border -->
+      <div class="absolute inset-0 rounded-2xl neon-border pointer-events-none"></div>
+    
+      <!-- Upload Card -->
+      <div class="relative z-10 bg-[#111827] p-10 rounded-2xl text-center shadow-2xl">
+        <img src="https://img.icons8.com/fluency/48/upload.png" class="mx-auto mb-4" alt="Upload Icon" />
+        <h2 class="text-2xl font-semibold text-white mb-4">Upload your CSV File</h2>
+    
+        <div id="login-error" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+          Please Signup/Login to proceed.
+        </div>
+    
+        <input type="file" id="csvInput" accept=".csv"
+          class="block w-full px-4 py-2 text-black rounded mb-4 bg-white border border-gray-300 focus:outline-none" />
+    
+        <button onclick="uploadCSV()"
+          class="mt-2 px-6 py-2 bg-cyan-600 hover:bg-cyan-500 border border-white rounded transition text-white">
+          Upload Now
+        </button>
+    
+        <div id="uploadMessage" class="text-green-400 font-medium mt-4 hidden">
+          PDF uploaded successfully ✅
+        </div>
+      </div>
+    </div>
+    
+  <!-- Login Required Popup (with animation) -->
+  <div id="loginModal"
+    class="fixed inset-0 bg-black bg-opacity-60 z-50 hidden items-center justify-center transition-opacity duration-300">
+    <div id="loginModalBox"
+      class="opacity-0 scale-95 transform transition-all duration-300 bg-red-100 text-red-800 rounded-lg p-6 w-80 max-w-[90%] text-center shadow-xl relative">
+      <button type="button" onclick="closeLoginModal()"
+        class="absolute top-2 right-3 text-red-500 hover:text-red-700 text-lg leading-none">
+        &times;
+      </button>
+      <h2 class="text-xl font-bold mb-2">Access Denied</h2>
+      <p class="text-sm mb-4">Please <span class="font-semibold">Signup/Login</span> to proceed.</p>
+      <div class="flex justify-center gap-3">
+        <a href="signup.html" class="px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-sm">Sign
+          Up</a>
+        <a href="login.html" class="px-3 py-1 rounded bg-gray-700 hover:bg-gray-800 text-white text-sm">Log
+          In</a>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Footer -->
+  <footer class="relative z-10 text-center py-6 text-sm text-blue-300">
+    <div>&copy; 2025 Nexus DataLens. All rights reserved.</div>
+    <nav class="space-x-4 mt-2 font-semibold">
+      <button onclick="openPrivacyModal()" class="text-blue-300 hover:text-white transition">
+        Privacy
+      </button>
+      <button onclick="openTermsModal()" class="text-blue-300 hover:text-white transition">
+        Terms
+      </button>
+      <button onclick="openContactModal()" class="text-blue-300 hover:text-white transition">
+        Contact
+      </button>
+    </nav>
+
+    <!-- Privacy Modal -->
+    <div id="privacyModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 hidden">
+      <div class="bg-gray-900 text-white rounded-lg shadow-xl max-w-3xl w-11/12 p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold text-cyan-400">Privacy Policy</h2>
+        </div>
+        <div class="max-h-[60vh] overflow-y-auto pr-2 text-sm text-gray-300 space-y-4">
+          <p>
+            At Nexus DataLens, your privacy is our top priority. This Privacy Policy outlines how we collect, use,
+            and protect your information when you use our services.
+          </p>
+
+          <h3 class="text-lg font-semibold text-cyan-300">Information We Collect</h3>
+          <ul class="list-disc list-inside space-y-1">
+            <li>User-provided data (email, name, etc.)</li>
+            <li>Uploaded files (e.g., CSVs)</li>
+            <li>Usage analytics and metadata</li>
+          </ul>
+
+          <h3 class="text-lg font-semibold text-cyan-300">How We Use Your Data</h3>
+          <p>
+            We use your data solely to provide, improve, and personalize our services. We never sell your data to third
+            parties.
+          </p>
+        </div>
+        <div class="mt-6 text-right">
+          <button onclick="closePrivacyModal()" class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div id="termsModal"
+      class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+      <div class="bg-gray-900 text-white rounded-lg shadow-xl max-w-3xl w-11/12 p-6">
+
+        <!-- Modal Header -->
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold text-cyan-400">Terms of Service</h2>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="max-h-[60vh] overflow-y-auto pr-2">
+          <p class="mb-4">
+            By accessing or using Nexus DataLens, you agree to be bound by these Terms of Service.
+            Please read them carefully before using our platform.
+          </p>
+
+          <h3 class="text-lg font-semibold text-cyan-300 mt-4 mb-2">User Responsibilities</h3>
+          <ul class="list-disc list-inside space-y-1 mb-4">
+            <li>You must use the platform in accordance with all applicable laws.</li>
+            <li>You are responsible for maintaining the confidentiality of your login credentials.</li>
+          </ul>
+
+          <h3 class="text-lg font-semibold text-cyan-300 mt-4 mb-2">Prohibited Activities</h3>
+          <ul class="list-disc list-inside space-y-1 mb-4">
+            <li>No misuse, unauthorized access, or attempts to breach the platform’s security.</li>
+            <li>Uploading malicious or harmful files is strictly prohibited.</li>
+          </ul>
+
+          <p class="mb-4">
+            These terms may be updated from time to time. Continued use of the service implies acceptance of the latest
+            terms.
+          </p>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="mt-6 text-right">
+          <button onclick="closeTermsModal()" class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-60 flex items-center justify-center">
+      <div class="relative bg-gray-900 text-white rounded-lg shadow-xl max-w-3xl w-11/12 p-6">
+
+        <!-- Title -->
+        <h2 class="text-2xl font-semibold text-center mb-6">Contact</h2>
+
+        <!-- Icons -->
+        <div class="flex justify-center gap-8 text-2xl mb-6">
+          <a href="mailto:youremail@example.com" title="Email" class="hover:text-blue-400">
+            <i class="fas fa-envelope"></i>
+          </a>
+          <a href="https://www.linkedin.com" target="_blank" title="LinkedIn" class="hover:text-blue-400">
+            <i class="fab fa-linkedin"></i>
+          </a>
+          <a href="https://github.com" target="_blank" title="GitHub" class="hover:text-blue-400">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+
+        <!-- Query Form -->
+        <section class="bg-[#0f172a] text-white py-8 px-6 rounded-2xl shadow-lg">
+          <h3 class="text-xl font-semibold mb-4 text-center">Write Your Query</h3>
+
+          <form action="#" method="POST" class="space-y-5 z-10 relative">
+
+            <div>
+              <label for="name" class="block mb-1 text-sm">Your Name</label>
+              <input type="text" id="name" name="name" required placeholder="Enter Name"
+                class="px-4 py-2 rounded-lg bg-[#1e293b] text-black border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <div>
+              <label for="email" class="block mb-1 text-sm">Your Email</label>
+              <input type="email" id="email" name="email" required placeholder="Enter Email"
+                class="px-4 py-2 rounded-lg bg-[#1e293b] text-black border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <div>
+              <label for="message" class="block mb-1 text-sm">Your Message</label>
+              <textarea id="message" name="message" rows="4" required placeholder="Type your Query..."
+                class="px-4 py-2 rounded-lg bg-[#1e293b] text-black border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+            </div>
+
+            <button type="submit"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+              Send Query
+            </button>
+          </form>
+        </section>
+        <div class="mt-6 text-right">
+          <button onclick="closePrivacyModal()" class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    </div>
+    </div>
+
+
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init();
+
+    function uploadCSV() {
+      const input = document.getElementById('csvInput');
+      const message = document.getElementById('uploadMessage');
+      const file = input.files[0];
+
+      if (!file) {
+        message.classList.remove('hidden');
+        message.textContent = '❌ Please choose a CSV file before uploading!';
+        message.classList.remove('text-green-400');
+        message.classList.add('text-red-400');
+        return;
+      }
+
+      message.classList.remove('text-red-400');
+      message.classList.add('text-green-400');
+      message.classList.remove('hidden');
+      message.textContent = '⏳ Uploading...';
+
+      const s3UploadURL = "https://nexus-web-frontend1.s3.amazonaws.com/Data/" + encodeURIComponent(file.name);
+
+      fetch(s3UploadURL, {
+        method: "PUT",
+        body: file,
+        headers: {
+          "Content-Type": "text/csv"
+        }
+      })
+        .then((res) => {
+          if (res.ok) {
+            message.textContent = '✅ CSV uploaded successfully!';
+          } else {
+            message.textContent = '❌ Upload failed. Status: ' + res.status;
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          message.textContent = '❌ Upload error. Check console.';
+        });
+    }
+
+
+    // Block file input if user is not logged in
+    document.addEventListener("DOMContentLoaded", () => {
+      const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+      const csvInput = document.getElementById("csvInput");
+      const errorBox = document.getElementById("login-error");
+
+      csvInput.addEventListener("click", (e) => {
+        if (!isLoggedIn) {
+          e.preventDefault();
+          errorBox.classList.remove("hidden");
+          setTimeout(() => {
+            errorBox.classList.add("hidden");
+          }, 3000); // hide after 3 sec
+        }
+      });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+      if (isLoggedIn === "true") {
+        document.getElementById("signup-link").style.display = "none";
+        document.getElementById("login-link").style.display = "none";
+        document.getElementById("logout-link").style.display = "inline-block";
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem("isLoggedIn");
+      window.location.reload();
+    }
+
+  </script>
+  <script src="privacy.js"></script>
+  <script src="terms.js"></script>
+  <script src="contact.js"></script>
+</body>
+
+</html>

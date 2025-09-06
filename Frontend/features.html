@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Features | Nexus DataLens</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom scrollbar styles */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+      /* dark track */
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #3b82f6;
+      /* Tailwind blue-500 */
+      border-radius: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #2563eb;
+      /* Tailwind blue-600 */
+    }
+
+    /* Firefox */
+    html {
+      scrollbar-color: #3b82f6 #0f172a;
+      scrollbar-width: thin;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-950 text-white font-sans">
+  <nav
+    class="sticky top-0 z-50 flex justify-between items-center px-6 py-4 bg-gradient-to-r from-[#0A0F1F] via-[#0a1f44] to-[#0A0F1F] shadow-md">
+    <a href="index.html"><img src="LOGO.jpeg" alt="Logo" class="h-12 rounded shadow-lg" /></a>
+    <ul class="flex gap-6 font-semibold">
+      <li><a href="dashboard.html" class="text-blue-300 hover:text-white transition" target="_blank">Dashboard</a></li>
+      <li><a href="features.html" class="text-blue-300 hover:text-white transition">Features</a></li>
+      <li><a href="pricing.html" class="text-blue-300 hover:text-white transition">Pricing</a></li>
+      <li><a href="about.html" class="text-blue-300 hover:text-white transition">About Us</a></li>
+      <li><a href="faq.html" class="text-blue-300 hover:text-white transition" target="_blank">FAQs</a>
+      </li>
+      <li id="signup-link"><a href="signup.html" class="text-blue-300 hover:text-white transition">Sign
+          Up</a>
+      </li>
+      <li id="login-link"><a href="login.html" class="text-blue-300 hover:text-white transition">Log In</a>
+      </li>
+      <li id="logout-link" style="display: none;"><button onclick="logout()"
+          class="text-red-400 hover:text-white transition">Log Out</button></li>
+    </ul>
+  </nav>
+  <div class="container mx-auto px-6 py-12">
+    <h1 class="text-4xl font-bold mb-6 text-center text-blue-400 animate-fade-in">
+      🚀 Powerful Features at Your Fingertips
+    </h1>
+    <p class="text-center text-gray-300 mb-12 max-w-3xl mx-auto animate-fade-in">
+      Nexus DataLens transforms your raw data into ready-to-analyze insights with a serverless, intelligent, and
+      intuitive platform built on AWS.
+    </p>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up">
+      <div class="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-blue-400 transition duration-300">
+        <h2 class="text-xl font-semibold text-blue-300 mb-2">📁 Drag & Drop CSV Upload</h2>
+        <p class="text-gray-400">Upload CSV files via drag-and-drop or file selection using a sleek and intuitive
+          interface.</p>
+      </div>
+
+      <div class="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-blue-400 transition duration-300">
+        <h2 class="text-xl font-semibold text-blue-300 mb-2">🧹 Automatic Data Cleaning</h2>
+        <p class="text-gray-400">Our AWS Glue integration automatically cleans and converts your uploaded data into an
+          analysis-ready format.</p>
+      </div>
+
+      <div class="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-blue-400 transition duration-300">
+        <h2 class="text-xl font-semibold text-blue-300 mb-2">📌 No Table Naming Needed</h2>
+        <p class="text-gray-400">Table names are intelligently assigned using metadata—no manual effort required.</p>
+      </div>
+
+      <div class="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-blue-400 transition duration-300">
+        <h2 class="text-xl font-semibold text-blue-300 mb-2">📊 Instant Dashboard Creation</h2>
+        <p class="text-gray-400">Automatically generate interactive dashboards using Amazon QuickSight within seconds.
+        </p>
+      </div>
+
+      <div class="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-blue-400 transition duration-300">
+        <h2 class="text-xl font-semibold text-blue-300 mb-2">📩 User Notifications</h2>
+        <p class="text-gray-400">Receive updates or dashboard links directly via email. (Coming soon!)</p>
+      </div>
+
+      <div class="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-blue-400 transition duration-300">
+        <h2 class="text-xl font-semibold text-blue-300 mb-2">⚙️ Serverless & Scalable</h2>
+        <p class="text-gray-400">Our 100% serverless AWS architecture scales seamlessly with your data volume and users.
+        </p>
+      </div>
+
+      <div class="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-blue-400 transition duration-300">
+        <h2 class="text-xl font-semibold text-blue-300 mb-2">🔐 Secure & Compliant</h2>
+        <p class="text-gray-400">All data is encrypted, transferred securely, and handled under strict AWS security
+          practices.</p>
+      </div>
+
+      <div class="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-blue-400 transition duration-300">
+        <h2 class="text-xl font-semibold text-blue-300 mb-2">🖥️ Modern UI</h2>
+        <p class="text-gray-400">A minimal yet powerful interface keeps you focused on insights without distractions.
+        </p>
+      </div>
+
+      <div class="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-blue-400 transition duration-300">
+        <h2 class="text-xl font-semibold text-blue-300 mb-2">📈 Continuous Enhancements</h2>
+        <p class="text-gray-400">New features and improvements are released regularly based on user feedback and data
+          trends.</p>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .animate-fade-in {
+      animation: fadeIn 1s ease-in-out both;
+    }
+
+    .animate-fade-in-up {
+      animation: fadeInUp 1.2s ease-in-out both;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+      if (isLoggedIn === "true") {
+        document.getElementById("signup-link").style.display = "none";
+        document.getElementById("login-link").style.display = "none";
+        document.getElementById("logout-link").style.display = "inline-block";
+      }
+    });
+    function logout() {
+      localStorage.removeItem("isLoggedIn");
+      window.location.reload();
+    }
+  </script>
+</body>
+
+</html>

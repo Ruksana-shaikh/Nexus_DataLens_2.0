@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQs | Nexus DataLens</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom scrollbar styles */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+      /* dark track */
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #3b82f6;
+      /* Tailwind blue-500 */
+      border-radius: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #2563eb;
+      /* Tailwind blue-600 */
+    }
+
+    /* Firefox */
+    html {
+      scrollbar-color: #3b82f6 #0f172a;
+      scrollbar-width: thin;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-900 text-white font-sans min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <nav
+    class="sticky top-0 z-50 flex justify-between items-center px-6 py-4 bg-gradient-to-r from-[#0A0F1F] via-[#0a1f44] to-[#0A0F1F] shadow-md">
+    <a href="index.html"><img src="LOGO.jpeg" alt="Logo" class="h-12 rounded shadow-lg" /></a>
+    <ul class="flex gap-6 font-semibold">
+      <li><a href="dashboard.html" class="text-blue-300 hover:text-white transition" target="_blank">Dashboard</a></li>
+      <li><a href="features.html" class="text-blue-300 hover:text-white transition" target="_blank">Features</a>
+      </li>
+      <li><a href="pricing.html" class="text-blue-300 hover:text-white transition" target="_blank">Pricing</a>
+      </li>
+      <li><a href="about.html" class="text-blue-300 hover:text-white transition" target="_blank">About Us</a>
+      </li>
+      <li><a href="faq.html" class="text-blue-300 hover:text-white transition" target="_blank">FAQs</a></li>
+      <li id="signup-link"><a href="signup.html" class="text-blue-300 hover:text-white transition">Sign Up</a>
+      </li>
+      <li id="login-link"><a href="login.html" class="text-blue-300 hover:text-white transition">Log In</a></li>
+      <li id="logout-link" style="display: none;"><button onclick="logout()"
+          class="text-red-400 hover:text-white transition">Log Out</button></li>
+    </ul>
+  </nav>
+
+  <!-- FAQ Section -->
+  <main class="flex-grow">
+    <section class="max-w-6xl mx-auto px-6 py-16">
+      <h2 class="text-3xl font-bold text-blue-300 mb-10">
+        <center>Frequently Asked Questions</center>
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 text-gray-300">
+
+        <!-- FAQ Item -->
+        <div>
+          <h3 class="text-lg font-semibold text-blue-400 mb-2">What is Nexus DataLens?</h3>
+          <p class="text-sm">
+            Nexus DataLens is a cloud-based platform that allows users to upload datasets (CSV, Excel, etc.), clean the
+            data automatically, and generate insightful visualizations using AWS-powered services.
+          </p>
+        </div>
+
+        <!-- FAQ Item -->
+        <div>
+          <h3 class="text-lg font-semibold text-blue-400 mb-2">Which file formats are supported?</h3>
+          <p class="text-sm">
+            Currently, we support CSV, XLSX (Excel), and JSON file uploads. Support for databases and APIs is coming
+            soon.
+          </p>
+        </div>
+
+        <!-- FAQ Item -->
+        <div>
+          <h3 class="text-lg font-semibold text-blue-400 mb-2">Is login required to upload files?</h3>
+          <p class="text-sm">
+            Yes. For security reasons and to provide personalized insights, users must sign up or log in before
+            uploading files.
+          </p>
+        </div>
+
+        <!-- FAQ Item -->
+        <div>
+          <h3 class="text-lg font-semibold text-blue-400 mb-2">How is my data cleaned?</h3>
+          <p class="text-sm">
+            Our backend uses AWS Lambda and Glue Job scripts to remove null values, handle duplicates, normalize column
+            formats, and detect common anomalies.
+          </p>
+        </div>
+
+        <!-- FAQ Item -->
+        <div>
+          <h3 class="text-lg font-semibold text-blue-400 mb-2">Are my files and data secure?</h3>
+          <p class="text-sm">
+            Absolutely. All files are stored in encrypted S3 buckets and accessed securely via API Gateway. Your data is
+            never shared with third parties.
+          </p>
+        </div>
+
+        <!-- FAQ Item -->
+        <div>
+          <h3 class="text-lg font-semibold text-blue-400 mb-2">Can I download cleaned data and reports?</h3>
+          <p class="text-sm">
+            Yes. After the data is cleaned and processed, you can download the cleaned version and export insights as
+            PDFs, images, or spreadsheets.
+          </p>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="relative z-10 text-center py-6 text-sm text-blue-300">
+    <div>&copy; 2025 Nexus DataLens. All rights reserved.</div>
+    <nav class="space-x-4 mt-2 font-semibold">
+      <button onclick="openPrivacyModal()" class="text-blue-300 hover:text-white transition">
+        Privacy
+      </button>
+      <button onclick="openTermsModal()" class="text-blue-300 hover:text-white transition">
+        Terms
+      </button>
+      <button onclick="openContactModal()" class="text-blue-300 hover:text-white transition">
+        Contact
+      </button>
+    </nav>
+
+    <!-- Privacy Modal -->
+    <div id="privacyModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 hidden">
+      <div class="bg-gray-900 text-white rounded-lg shadow-xl max-w-3xl w-11/12 p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold text-cyan-400">Privacy Policy</h2>
+        </div>
+        <div class="max-h-[60vh] overflow-y-auto pr-2 text-sm text-gray-300 space-y-4">
+          <p>
+            At Nexus DataLens, your privacy is our top priority. This Privacy Policy outlines how we collect, use,
+            and protect your information when you use our services.
+          </p>
+
+          <h3 class="text-lg font-semibold text-cyan-300">Information We Collect</h3>
+          <ul class="list-disc list-inside space-y-1">
+            <li>User-provided data (email, name, etc.)</li>
+            <li>Uploaded files (e.g., CSVs)</li>
+            <li>Usage analytics and metadata</li>
+          </ul>
+
+          <h3 class="text-lg font-semibold text-cyan-300">How We Use Your Data</h3>
+          <p>
+            We use your data solely to provide, improve, and personalize our services. We never sell your data to third
+            parties.
+          </p>
+        </div>
+        <div class="mt-6 text-right">
+          <button onclick="closePrivacyModal()" class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div id="termsModal"
+      class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+      <div class="bg-gray-900 text-white rounded-lg shadow-xl max-w-3xl w-11/12 p-6">
+
+        <!-- Modal Header -->
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold text-cyan-400">Terms of Service</h2>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="max-h-[60vh] overflow-y-auto pr-2">
+          <p class="mb-4">
+            By accessing or using Nexus DataLens, you agree to be bound by these Terms of Service.
+            Please read them carefully before using our platform.
+          </p>
+
+          <h3 class="text-lg font-semibold text-cyan-300 mt-4 mb-2">User Responsibilities</h3>
+          <ul class="list-disc list-inside space-y-1 mb-4">
+            <li>You must use the platform in accordance with all applicable laws.</li>
+            <li>You are responsible for maintaining the confidentiality of your login credentials.</li>
+          </ul>
+
+          <h3 class="text-lg font-semibold text-cyan-300 mt-4 mb-2">Prohibited Activities</h3>
+          <ul class="list-disc list-inside space-y-1 mb-4">
+            <li>No misuse, unauthorized access, or attempts to breach the platform’s security.</li>
+            <li>Uploading malicious or harmful files is strictly prohibited.</li>
+          </ul>
+
+          <p class="mb-4">
+            These terms may be updated from time to time. Continued use of the service implies acceptance of the latest
+            terms.
+          </p>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="mt-6 text-right">
+          <button onclick="closeTermsModal()" class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-60 flex items-center justify-center">
+      <div class="relative bg-gray-900 text-white rounded-lg shadow-xl max-w-3xl w-11/12 p-6">
+
+        <!-- Title -->
+        <h2 class="text-2xl font-semibold text-center mb-6">Contact</h2>
+
+        <!-- Icons -->
+        <div class="flex justify-center gap-8 text-2xl mb-6">
+          <a href="mailto:youremail@example.com" title="Email" class="hover:text-blue-400">
+            <i class="fas fa-envelope"></i>
+          </a>
+          <a href="https://www.linkedin.com" target="_blank" title="LinkedIn" class="hover:text-blue-400">
+            <i class="fab fa-linkedin"></i>
+          </a>
+          <a href="https://github.com" target="_blank" title="GitHub" class="hover:text-blue-400">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+
+        <!-- Query Form -->
+        <section class="bg-[#0f172a] text-white py-8 px-6 rounded-2xl shadow-lg">
+          <h3 class="text-xl font-semibold mb-4 text-center">Write Your Query</h3>
+
+          <form action="#" method="POST" class="space-y-5 z-10 relative">
+
+            <div>
+              <label for="name" class="block mb-1 text-sm">Your Name</label>
+              <input type="text" id="name" name="name" required placeholder="Enter Name"
+                class="px-4 py-2 rounded-lg bg-[#1e293b] text-black border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <div>
+              <label for="email" class="block mb-1 text-sm">Your Email</label>
+              <input type="email" id="email" name="email" required placeholder="Enter Email"
+                class="px-4 py-2 rounded-lg bg-[#1e293b] text-black border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <div>
+              <label for="message" class="block mb-1 text-sm">Your Message</label>
+              <textarea id="message" name="message" rows="4" required placeholder="Type your Query..."
+                class="px-4 py-2 rounded-lg bg-[#1e293b] text-black border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+            </div>
+
+            <button type="submit"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+              Send Query
+            </button>
+          </form>
+        </section>
+        <div class="mt-6 text-right">
+          <button onclick="closePrivacyModal()" class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    </div>
+    </div>
+
+
+  </footer>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+      if (isLoggedIn === "true") {
+        document.getElementById("signup-link").style.display = "none";
+        document.getElementById("login-link").style.display = "none";
+        document.getElementById("logout-link").style.display = "inline-block";
+      }
+    });
+    function logout() {
+      localStorage.removeItem("isLoggedIn");
+      window.location.reload();
+    }
+  </script>
+  <script src="script.js"></script>
+  <script src="privacy.js"></script>
+  <script src="terms.js"></script>
+
+</body>
+
+</html>

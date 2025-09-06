@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | Nexus DataLens</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography" data-tw></script>
+
+  <style>
+    body {
+      background: radial-gradient(ellipse at center, #0f172a 0%, #0b1120 100%);
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .glow-border {
+      border: 2px solid #00f0ff;
+      box-shadow: 0 0 15px #00f0ff44;
+      border-radius: 12px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #3b82f6;
+      border-radius: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #2563eb;
+    }
+
+    html {
+      scrollbar-color: #3b82f6 #0f172a;
+      scrollbar-width: thin;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-950 text-white font-sans">
+  <!-- ✅ Navbar -->
+  <nav
+    class="sticky top-0 z-50 flex justify-between items-center px-6 py-4 bg-gradient-to-r from-[#0A0F1F] via-[#0a1f44] to-[#0A0F1F] shadow-md">
+    <a href="index.html"><img src="LOGO.jpeg" alt="Logo" class="h-12 rounded shadow-lg" /></a>
+    <ul class="flex gap-6 font-semibold">
+      <li><a href="features.html" class="text-blue-300 hover:text-white transition">Features</a></li>
+      <li><a href="pricing.html" class="text-blue-300 hover:text-white transition">Pricing</a></li>
+      <li><a href="about.html" class="text-blue-300 hover:text-white transition">About Us</a></li>
+      <li><a href="faq.html" class="text-blue-300 hover:text-white transition" target="_blank">FAQs</a></li>
+      <li id="signup-link"><a href="signup.html" class="text-blue-300 hover:text-white transition">Sign Up</a></li>
+      <li id="login-link"><a href="login.html" class="text-blue-300 hover:text-white transition">Log In</a></li>
+      <li id="logout-link" style="display: none;">
+        <button onclick="logout()" class="text-red-400 hover:text-white transition">Log Out</button>
+      </li>
+    </ul>
+  </nav>
+
+  <h1 class="text-3xl font-bold mb-8 text-center mt-8">📊 Nexus Dashboard Insights</h1>
+
+  <!-- ✅ Dashboard Container -->
+  <div id="dashboardContainer" class="w-full max-w-8xl h-[700px] glow-border overflow-hidden mx-auto"></div>
+
+  <!-- ✅ Static QuickSight Embed -->
+  <script src="https://d1metn98y57dg.cloudfront.net/sdk/quicksight-embedding-js-sdk.min.js"></script>
+  <script>
+    const embedUrl = "https://ap-south-1.quicksight.aws.amazon.com/embed/66f60144a870407fa2a3efc1fee88652/dashboards/49469098-a37c-41c4-b570-527bdcdd3277?code=AYABeExDqGoDwcMyhJFF1Biwx9YAAAABAAdhd3Mta21zAExhcm46YXdzOmttczphcC1zb3V0aC0xOjE5Nzk5NjEyMjE0OTprZXkvZWYwZmM3YmEtMDExZS00MmNjLWJhNDctZWZmNDk1NGU3MTRjALgBAgEAeKZkglQ7sX7Es9pGBLjJr3mUv5VmoF_fGXBaUVgDwM1EAdsBr5F5EysMzVnfl4ApizAAAAB-MHwGCSqGSIb3DQEHBqBvMG0CAQAwaAYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAy9aKRfxgEh-JNxbrUCARCAO124x4Ph6cNLid7DRZUVPAQ9I7YTlL6SN_kvez66DhWu6h775v-OJQ-8XC4WpraZ1FVoMr9hRp-tFcMcAgAAAAAMAAAQAAAAAAAAAAAAAAAAAJq88dJ32YUTdOIy24uC6gr_____AAAAAQAAAAAAAAAAAAAAAQAAAJtBotezBeeev-NjWvGnbMwdyIBQgy7O3WiQ42pRgs3Xb4iLm4bi4KsvSZ8dW7yNQU1o84-QydVqJnQRRLaLQ-D-uvrtOdcQnRSIf86jQg7j0s_NiO6PROmTdmzJsCe3UtnWqN9mz4uX37oQhpIOdA6lL42qULIo6pc1i6i_HzOLmDhLaG54f1dLljrdq-E0uv16Jd1YQvWa7t5yorNxAWtWpU2viQfPmxTLERs%3D&identityprovider=quicksight&isauthcode=true"; // 🔁 Replace with real embed URL
+
+    const tryEmbed = () => {
+      if (typeof amazon !== "undefined" && amazon.quicksightEmbedding) {
+        const container = document.getElementById("dashboardContainer");
+
+        const dashboard = amazon.quicksightEmbedding.embedDashboard({
+          url: embedUrl,
+          container,
+          height: "700px",
+          width: "100%",
+          scrolling: "no",
+          footerPaddingEnabled: true,
+          printEnabled: true,
+          sheetTabsDisabled: false
+        });
+
+        dashboard.on("error", err => {
+          console.error("❌ Dashboard error:", err);
+        });
+      } else {
+        console.log("⏳ Waiting for amazon.quicksightEmbedding...");
+        setTimeout(tryEmbed, 300);
+      }
+    };
+
+    tryEmbed();
+
+    // ✅ Handle login/logout UI
+    document.addEventListener("DOMContentLoaded", () => {
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
+      if (isLoggedIn === "true") {
+        document.getElementById("signup-link").style.display = "none";
+        document.getElementById("login-link").style.display = "none";
+        document.getElementById("logout-link").style.display = "inline-block";
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem("isLoggedIn");
+      window.location.reload();
+    }
+  </script>
+</body>
+
+</html>
