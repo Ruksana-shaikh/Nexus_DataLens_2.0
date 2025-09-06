@@ -1,0 +1,15 @@
+{
+  "fileLocations": [
+    {
+      "URIs": [
+        "s3://nexus-web-frontend1/Data/test.csv"
+      ]
+    }
+  ],
+  "globalUploadSettings": {
+    "format": "CSV",
+    "delimiter": ",",
+    "textqualifier": "\"",
+    "containsHeader": "true"
+  }
+}
