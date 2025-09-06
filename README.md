@@ -131,6 +131,12 @@ https://github.com/Ruksana-shaikh/Nexus_DataLens_2.0/blob/main/Documents/Nexus_D
 
 <img width="940" height="424" alt="image" src="https://github.com/user-attachments/assets/b9416c34-d62b-4dc5-b230-1106eb6d86df" />
 
+### Example PowerBI Dashboard
+
+<img width="940" height="500" alt="image" src="https://github.com/user-attachments/assets/f11beac3-d0db-4050-af3f-7ca4bcb21f0f" />
+
+<img width="940" height="493" alt="image" src="https://github.com/user-attachments/assets/1a5d1def-d59e-4e16-9fac-a843390b7461" />
+
 
 ---
 
