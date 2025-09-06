@@ -1,0 +1,159 @@
+import boto3
+import json
+import os
+import uuid
+
+quicksight = boto3.client('quicksight')
+glue = boto3.client('glue')
+sts = boto3.client('sts')
+account_id = sts.get_caller_identity()["Account"]
+
+# ✅ Valid QuickSight column types
+TYPE_MAPPING = {
+    "string": "STRING",
+    "bigint": "INTEGER",
+    "int": "INTEGER",
+    "integer": "INTEGER",
+    "double": "DECIMAL",
+    "float": "DECIMAL",
+    "boolean": "BOOLEAN",
+    "timestamp": "DATETIME",
+    "date": "DATETIME",
+    "binary": "STRING",
+    "char": "STRING",
+    "varchar": "STRING"
+}
+
+def map_field_type(qs_col):
+    col_type = qs_col["Type"]
+    if col_type in ["INTEGER", "DECIMAL"]:
+        return "NumericalDimensionField"
+    elif col_type == "DATETIME":
+        return "DateDimensionField"
+    else:
+        return "CategoricalDimensionField"
+
+def lambda_handler(event, context):
+    print("Event received:", json.dumps(event, indent=2))
+
+    try:
+        crawler_name = event['detail']['crawlerName']
+
+        # Get the crawler info to find the associated database
+        crawler_info = glue.get_crawler(Name=crawler_name)
+        database_name = crawler_info['Crawler']['DatabaseName']
+
+        # List tables in that database and pick the most recently updated
+        tables_response = glue.get_tables(DatabaseName=database_name)
+        tables = tables_response['TableList']
+
+        if not tables:
+            print("⚠ No tables found in Glue database.")
+            return {'statusCode': 204, 'body': f"No tables found in database '{database_name}'"}
+
+        # Sort tables by UpdateTime descending and pick the latest one
+        tables.sort(key=lambda x: x['UpdateTime'], reverse=True)
+        table_name = tables[0]['Name']
+
+        dataset_id = f"{crawler_name}-ds-{uuid.uuid4().hex[:8]}"
+        dashboard_id = f"dashboard-{uuid.uuid4().hex[:8]}"
+        datasource_arn = "arn:aws:quicksight:ap-south-1:242201271328:datasource/b0818a81-3bf0-4261-95db-e3f3d4cd4456"
+        template_arn = "arn:aws:quicksight:ap-south-1:242201271328:template/auto-dashboard-template"
+
+        table = glue.get_table(DatabaseName=database_name, Name=table_name)
+        columns = table["Table"]["StorageDescriptor"]["Columns"]
+
+        if not columns:
+            print("⚠ No columns found in Glue table.")
+            return {'statusCode': 204, 'body': f"No columns found for table '{table_name}'"}
+
+        qs_columns = [{
+            "Name": col["Name"],
+            "Type": TYPE_MAPPING.get(col["Type"].lower(), "STRING")
+        } for col in columns]
+
+        print(f"🔍 Mapped columns: {qs_columns}")
+
+        dataset_response = quicksight.create_data_set(
+            AwsAccountId=account_id,
+            DataSetId=dataset_id,
+            Name=dataset_id,
+            ImportMode="SPICE",
+            PhysicalTableMap={
+                "AthenaTable": {
+                    "CustomSql": {
+                        "DataSourceArn": datasource_arn,
+                        "Name": dataset_id,
+                        "SqlQuery": f'SELECT * FROM "{database_name}"."{table_name}"',
+                        "Columns": qs_columns
+                    }
+                }
+            },
+            Permissions=[{
+                "Principal": f"arn:aws:quicksight:ap-south-1:{account_id}:user/default/{account_id}",
+                "Actions": [
+                    "quicksight:DescribeDataSet",
+                    "quicksight:DescribeDataSetPermissions",
+                    "quicksight:PassDataSet",
+                    "quicksight:DescribeIngestion",
+                    "quicksight:ListIngestions",
+                    "quicksight:UpdateDataSet",
+                    "quicksight:DeleteDataSet",
+                    "quicksight:CreateIngestion"
+                ]
+            }]u
+        )
+
+        dataset_arn = dataset_response['Arn']
+        print("✅ Dataset created:", dataset_arn)
+
+        # 🔹 Create Dashboard from Template
+        dashboard_response = quicksight.create_dashboard(
+            AwsAccountId=account_id,
+            DashboardId=dashboard_id,
+            Name=f"{crawler_name}-dashboard",
+            SourceEntity={
+                "SourceTemplate": {
+                    "Arn": template_arn,
+                    "DataSetReferences": [{
+                        "DataSetPlaceholder": "AutoDataset",
+                        "DataSetArn": dataset_arn
+                    }]
+                }
+            },
+            Permissions=[{
+                "Principal": f"arn:aws:quicksight:ap-south-1:{account_id}:user/default/{account_id}",
+                "Actions": [
+                    "quicksight:DescribeDashboard",
+                    "quicksight:QueryDashboard",
+                    "quicksight:ListDashboardVersions",
+                    "quicksight:UpdateDashboard",
+                    "quicksight:DeleteDashboard",
+                    "quicksight:UpdateDashboardPublishedVersion"
+                ]
+            }],
+            DashboardPublishOptions={
+                "AdHocFilteringOption": {"AvailabilityStatus": "ENABLED"},
+                "ExportToCSVOption": {"AvailabilityStatus": "ENABLED"},
+                "SheetControlsOption": {"VisibilityState": "EXPANDED"}
+            }
+        )
+
+        dashboard_arn = dashboard_response['Arn']
+        print("✅ Dashboard created:", dashboard_arn)
+
+        return {
+            'statusCode': 200,
+            'body': json.dumps({
+                'Dataset': dataset_arn,
+                'Dashboard': dashboard_arn
+            })
+        }
+
+    except quicksight.exceptions.ResourceExistsException:
+        print("⚠ Resource already exists.")
+        return {'statusCode': 409, 'body': 'Resource already exists'}
+
+    except Exception as e:
+        print("❌ Error:", str(e))
+        return {'statusCode': 500, 'body': str(e)}
