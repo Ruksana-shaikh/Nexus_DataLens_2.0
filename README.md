@@ -117,7 +117,8 @@ nexus-datalens/
 ## 📖 Documentation
 
 The full documentation can be found in:
-📄 `docs/Nexus_DataLens_Documentation.pdf`
+
+https://github.com/Ruksana-shaikh/Nexus_DataLens_2.0/blob/main/Documents/Nexus_DataLens2.0_Documentation.pdf
 
 ---
 
@@ -125,7 +126,10 @@ The full documentation can be found in:
 
 ### Example QuickSight Dashboard
 
-![Dashboard](assets/screenshots/23_quicksight_dashboard.png)
+<img width="940" height="428" alt="image" src="https://github.com/user-attachments/assets/0941ae61-5492-4f56-97f1-9eac6499753c" />
+
+<img width="940" height="424" alt="image" src="https://github.com/user-attachments/assets/b9416c34-d62b-4dc5-b230-1106eb6d86df" />
+
 
 ---
 
@@ -144,7 +148,7 @@ See `LICENSE` for details.
 
 ## 📬 Contact
 
-* **LinkedIn**: [www.linkedin.com/in/ruksana-ks](#)
+* **LinkedIn**: [www.linkedin.com/in/ruksana-ks]
 * **Email**: [shaikhruksana.k@gmail.com]
 
 ---
