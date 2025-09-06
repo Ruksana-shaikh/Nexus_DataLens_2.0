@@ -1,0 +1,81 @@
+import sys
+import os
+import boto3
+import time
+import json
+from awsglue.utils import getResolvedOptions
+from pyspark.context import SparkContext
+from awsglue.context import GlueContext
+from awsglue.job import Job
+from pyspark.sql.functions import col
+
+args = getResolvedOptions(sys.argv, ['JOB_NAME', 'S3_INPUT_FILE'])
+filename = os.path.basename(args['S3_INPUT_FILE']).split('.')[0]
+
+sc = SparkContext()
+glueContext = GlueContext(sc)
+spark = glueContext.spark_session
+job = Job(glueContext)
+job.init(args['JOB_NAME'], args)
+
+df = spark.read.option("header", "true").csv(args['S3_INPUT_FILE'])
+
+# Drop empty rows and columns
+df = df.dropna(how='all')
+non_empty_cols = [c for c in df.columns if df.filter(col(c).isNotNull()).count() > 0]
+df = df.select(non_empty_cols)
+
+if df.rdd.isEmpty():
+    print("⚠️ No data to save after cleaning.")
+else:
+    df = df.coalesce(1)
+
+    s3_temp_path = f"s3://nexus-web-frontend1/temp-cleaned/{filename}/"
+    s3_final_path = f"s3://nexus-web-frontend1/cleaned-output/{filename}.csv"
+
+    # Write to temp folder
+    df.write.mode("overwrite").option("header", "true").csv(s3_temp_path)
+    print(f"✅ Written to temp folder: {s3_temp_path}")
+
+    # Rename part file to filename.csv
+    s3 = boto3.client('s3')
+    bucket = "nexus-web-frontend1"
+    prefix = f"temp-cleaned/{filename}/"
+
+    objects = s3.list_objects_v2(Bucket=bucket, Prefix=prefix)
+    part_file = None
+    for obj in objects.get('Contents', []):
+        key = obj['Key']
+        if key.endswith('.csv'):
+            part_file = key
+            break
+
+    if part_file:
+        copy_source = {'Bucket': bucket, 'Key': part_file}
+        s3.copy_object(Bucket=bucket, CopySource=copy_source, Key=f"cleaned-output/{filename}.csv")
+        s3.delete_object(Bucket=bucket, Key=part_file)
+        print(f"✅ Renamed and moved to: s3://{bucket}/cleaned-output/{filename}.csv")
+    else:
+        print("❌ No CSV part file found in temp folder!")
+
+# Trigger Lambda
+lambda_client = boto3.client('lambda', region_name='ap-south-1')
+time.sleep(10)
+
+payload = {
+    "detail": {
+        "crawlerName": filename
+    }
+}
+
+try:
+    response = lambda_client.invoke(
+        FunctionName="arn:aws:lambda:ap-south-1:242201271328:function:LambdaTriggerQuicksight",
+        InvocationType="Event",
+        Payload=json.dumps(payload)
+    )
+    print("✅ Lambda invoked:", response['StatusCode'])
+except Exception as e:
+    print("❌ Lambda error:", str(e))
+
+job.commit()
