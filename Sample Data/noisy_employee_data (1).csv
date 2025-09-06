@@ -1,0 +1,9 @@
+Emp_ID,Name,Age,Dept,Join_Date,Salary
+101.0,Ali,28,HR,2020-01-15,50000
+102.0,Zara,31,IT,2019-05-10,60000
+,Ali,twenty-nine,HR,2020-01-15,50000
+104.0,,40,Finance,invalid-date,70000
+105.0,Ahmed,,IT,2021-07-01,NA
+106.0,Sara,25,HR,,55000
+106.0,Sara,25,HR,2019/05/10,55000
+107.0,@invalid,,---,,??
